@@ -1,5 +1,6 @@
 package co.s4n.calnat
 
+import scala.annotation.tailrec
 import scala.io.StdIn
 
 object Main extends App {
@@ -11,12 +12,16 @@ object Main extends App {
 
   def esCero(nat: Nat) = nat match {
     case Cero() => true
-    case Suc(nat) => false
+    case Suc(_) => false
   }
 
-  def conIntANat(i: Int): Nat = i match {
-    case 0 => Cero()
-    case _ => Suc(conIntANat(i - 1))
+  def conIntANat(i: Int): Nat = {
+    @tailrec
+    def iConIntANat(i: Int, accum: Nat): Nat = i match {
+      case 0 => accum
+      case _ => iConIntANat(i - 1, Suc(accum))
+    }
+    iConIntANat(i, Cero())
   }
 
   def imprimirNat(nat: Nat): String = {
@@ -28,6 +33,7 @@ object Main extends App {
     }
   }
 
+  @tailrec
   def sumaNat(nat1: Nat, nat2: Nat): Nat = (nat1, nat2) match {
     case (Cero(), nat2) => nat2
     case (nat1, Cero()) => nat1
@@ -35,7 +41,8 @@ object Main extends App {
   }
 
   def extractSuc(nat: Nat): Nat = nat match {
-    case Suc(nat) => nat
+    case Suc(n) => n
+    case Cero() => Cero()
   }
 
   def addSuc(nat: Nat): Nat = Suc(nat)
